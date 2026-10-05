@@ -3,8 +3,10 @@ import rawEvents from "../../data/new_events.json";
 import { normalizeEvents } from "../../data/normalizeEvents";
 
 const REQUEST_TIMEOUT_MS = 6000;
-const CACHE_TTL_MS = 60 * 1000;
+const CACHE_TTL_MS = 5 * 60 * 1000;
+const FALLBACK_RETRY_MS = 30 * 1000;
 let cache = { events: null, at: 0 };
+let fallbackUntil = 0;
 
 export const getFallbackEvents = () => normalizeEvents(rawEvents);
 
@@ -27,16 +29,20 @@ const fetchFromApi = async () => {
 
 export const fetchEvents = async () => {
   if (cache.events && Date.now() - cache.at < CACHE_TTL_MS) return cache.events;
-  let events = [];
+  if (Date.now() < fallbackUntil) return getFallbackEvents();
   try {
-    events = await fetchFromApi();
+    const events = await fetchFromApi();
+    if (events.length > 0) {
+      cache = { events, at: Date.now() };   // only successful API responses are cached
+      fallbackUntil = 0;
+      return events;
+    }
     if (events.length === 0) console.warn("[events] API returned no events - using bundled list");
   } catch (err) {
     console.warn("[events] API unavailable - using bundled list:", err.message);
   }
-  if (events.length === 0) events = getFallbackEvents();
-  cache = { events, at: Date.now() };
-  return events;
+  fallbackUntil = Date.now() + FALLBACK_RETRY_MS;
+  return getFallbackEvents();
 }
 
 // function parsePOC(pocRaw, email) {

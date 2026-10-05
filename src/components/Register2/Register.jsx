@@ -209,13 +209,13 @@ export const Register = () => {
       setPaymentError("");
 
       // Validate events selection
-      const eventsVal = Array.isArray(formData.events) ? formData.events : (formData.events ? [formData.events] : []);
-      if (!eventsVal.length) {
-        setError("events", { type: "required", message: "Please select at least one event to participate." });
-        return;
-      } else {
-        clearErrors("events");
-      }
+      // const eventsVal = Array.isArray(formData.events) ? formData.events : (formData.events ? [formData.events] : []);
+      // if (!eventsVal.length) {
+      //   setError("events", { type: "required", message: "Please select at least one event to participate." });
+      //   return;
+      // } else {
+      //   clearErrors("events");
+      // }
 
       // Validate team registration
       if (formData.registrationType === "team") {
@@ -300,7 +300,7 @@ export const Register = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+          <div className="max-w-2xl mx-auto">
             <div className="bg-darkGray rounded-xl p-6 md:p-8 shadow-lg shadow-cyan/10">
               <h2 className="text-xl font-semibold mb-6 pb-3 border-b border-cyan/30">
                 Personal Info
@@ -522,12 +522,12 @@ export const Register = () => {
               </div>
             </div>
 
-            <div className="bg-darkGray rounded-xl p-6 md:p-8 shadow-lg shadow-cyan/10">
+            <div className="hidden bg-darkGray rounded-xl p-6 md:p-8 shadow-lg shadow-cyan/10">
               <h2 className="text-xl font-semibold mb-6 pb-3 border-b border-cyan/30">
                 Event Selection
               </h2>
 
-              <div className="space-y-6">
+              {/* <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium mb-3">Select Events *</label>
 
@@ -621,7 +621,7 @@ export const Register = () => {
                     ))}
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
